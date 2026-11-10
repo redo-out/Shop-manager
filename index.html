@@ -34,67 +34,26 @@
     <main>
       <section class="flex flex-row sm:flex-wrap">
         <div class="flex flex-wrap pt-10 pb-10 w-full gap-2">
-          <input
+          <input id="product-search-by-title"
             class="basis-2/4 shrink p-5 text-white bg-black rounded-2xl"
             type="text"
             placeholder="Entrer le nom du produit ou la description"
           />
-          <input
+          <input id="product-search-by-price"
             class="basis-1/4 p-5 shrink text-white bg-black rounded-2xl"
             type="number"
             placeholder="des produits d'une valeur égale ou inférieure à ce prix"/>
         </div>
         <div class="flex content-center justify-between basis-1/4 flex-col items-center gap-1 p-7 md:flex-row md:gap-8">
-            <button class="rounded-xl p-4 bg-indigo-600 text-white hover:bg-indigo-700">Catégorie</button>
-            <button class="rounded-xl p-4 bg-indigo-600 text-white hover:bg-indigo-700">disponibles</button>
-            <button class="rounded-xl p-4 bg-indigo-600 text-white hover:bg-indigo-700">réinitialiser</button>
+            <button id="button-categorie" class="rounded-xl p-4 bg-indigo-600 text-white hover:bg-indigo-700">Catégorie</button>
+            <button id="button-disponible" class="rounded-xl p-4 bg-indigo-600 text-white hover:bg-indigo-700">disponibles</button>
+            <button id="button-reinitialiser" class="rounded-xl p-4 bg-indigo-600 text-white hover:bg-indigo-700">réinitialiser</button>
         </div>
       </section>
       <hr>
-      <article class="flex flex-wrap gap-5 pt-5 items-center justify-evenly">
-        <div class="basis-1/4">
-          <img
-            class="rounded-lg items-center"
-            src="assets/img/b2905ca624d70e1578df100d247779f3.jpg"
-            alt=""
-          />
-          <div>
-            <div class="text-xs font-bold text-sky-500">Bojack</div>
-            <div class="font-bold text-gray-700">
-              <p>best representation of depression</p>
-            </div>
-            <div class="text-sm text-gray-600">299 MAD</div>
-          </div>
-        </div>
-        <div class="basis-1/4">
-          <img
-            class="rounded-lg items-center"
-            src="assets/img/b2905ca624d70e1578df100d247779f3.jpg"
-            alt=""
-          />
-          <div>
-            <div class="text-xs font-bold text-sky-500">Bojack</div>
-            <div class="font-bold text-gray-700">
-              <p>best representation of depression</p>
-            </div>
-            <div class="text-sm text-gray-600">299 MAD</div>
-          </div>
-        </div>
-        <div class="basis-1/4">
-          <img
-            class="rounded-lg items-center"
-            src="assets/img/b2905ca624d70e1578df100d247779f3.jpg"
-            alt=""
-          />
-          <div>
-            <div class="text-xs font-bold text-sky-500">Bojack</div>
-            <div class="font-bold text-gray-700">
-              <p>best representation of depression</p>
-            </div>
-            <div class="text-sm text-gray-600">299 MAD</div>
-          </div>
-        </div>
-      </article>
+      <ul id="product-placeholder" class="grid grid-cols-[repeat(auto-fill,minmax(200px,1fr))] gap-4 pt-5 items-center justify-evenly">
+       
+      </ul>
     </main>
     <script src="JS/script.js"></script>
   </body>
