@@ -3,6 +3,11 @@ const searchPrice = document.getElementById("product-search-by-price");
 const productPlaceholder = document.getElementById("product-placeholder");
 const buttons = document.getElementById("buttons");
 const inputs = document.getElementById("inputs");
+const selects = document.querySelector(".select-category")
+
+
+// fetch products
+// fetch products
 
 
 async function getProducts(URL) {
@@ -15,6 +20,11 @@ async function getProducts(URL) {
   const json = await response.json();
   return json;
 }
+
+
+// display products
+// display products
+
 
 async function displayProducts() {
   const products = await getProducts('http://localhost:3000/api/products');
@@ -33,7 +43,7 @@ async function displayProducts() {
             </div>
             <div class="text-sm text-gray-600">${product.price} MAD</div>
             <div class="grid grid-flow-col pt-1 gap-2">
-            <p class="border-2 rounded-xl border-indigo-900 justify-between bg-indigo-200">${product.stock}</p>
+            <p class="border-2 rounded-xl border-indigo-900 justify-between bg-indigo-200">in stock ${product.stock}</p>
             <p class="border-2 rounded-xl border-red-900 bg-red-200">${product.categoryName}</p>
             </div>
             </div> `
@@ -41,6 +51,11 @@ async function displayProducts() {
   });
 }
 displayProducts();
+
+
+// search for available products
+// search for available products
+
 
 async function availableProducts() {
   productPlaceholder.innerHTML = "";
@@ -62,13 +77,18 @@ async function availableProducts() {
             </div>
             <div class="text-sm text-gray-600">${product.price} MAD</div>
             <div class="grid grid-flow-col pt-1 gap-2">
-            <p class="border-2 rounded-xl border-indigo-900 justify-between bg-indigo-200">${product.stock}</p>
+            <p class="border-2 rounded-xl border-indigo-900 justify-between bg-indigo-200">in stock ${product.stock}</p>
             <p class="border-2 rounded-xl border-red-900 bg-red-200">${product.categoryName}</p>
             </div>
           </div> `
     productPlaceholder.appendChild(list);
   })
 }
+
+
+// display available products and reset display
+// display available products and reset display
+
 
 buttons.addEventListener('click', (event) => {
   if (event.target.classList.contains("button-disponible")) {
@@ -85,10 +105,12 @@ buttons.addEventListener('click', (event) => {
   }
 });
 
+
+// search for product by name or description
+// search for product by name or description
+
+
 async function searchByNameOrDescription() {
-
-
-  // filteredTasksByTitle = tasks.filter((task) => task.title.toLowerCase().includes(searchValue),);
   productPlaceholder.innerHTML = "";
   const title = document.getElementById("product-search-by-title").value.toLowerCase();
   let newProducts = await getProducts(`http://localhost:3000/api/products?search=${title}`);
@@ -109,13 +131,18 @@ async function searchByNameOrDescription() {
           </div>
           <div class="text-sm text-gray-600">${product.price} MAD</div>
           <div class="grid grid-flow-col pt-1 gap-2">
-          <p class="border-2 rounded-xl border-indigo-900 justify-between bg-indigo-200">${product.stock}</p>
+          <p class="border-2 rounded-xl border-indigo-900 justify-between bg-indigo-200">in stock ${product.stock}</p>
           <p class="border-2 rounded-xl border-red-900 bg-red-200">${product.categoryName}</p>
           </div>
           </div> `
     productPlaceholder.appendChild(list);
   })
 }
+
+
+// search for product by max price
+// search for product by max price
+
 
 async function searchByPrice() {
   productPlaceholder.innerHTML = "";
@@ -138,13 +165,18 @@ async function searchByPrice() {
           </div>
           <div class="text-sm text-gray-600">${product.price} MAD</div>
           <div class="grid grid-flow-col pt-1 gap-2">
-          <p class="border-2 rounded-xl border-indigo-900 justify-between bg-indigo-200">${product.stock}</p>
+          <p class="border-2 rounded-xl border-indigo-900 justify-between bg-indigo-200">in stock ${product.stock}</p>
           <p class="border-2 rounded-xl border-red-900 bg-red-200">${product.categoryName}</p>
           </div>
           </div> `
     productPlaceholder.appendChild(list);
   })
 }
+
+
+// display products by name description or max price
+// display products by name description or max price
+
 
 inputs.addEventListener('input', (event) => {
   if (event.target.classList.contains("input-title")) {
@@ -156,3 +188,13 @@ inputs.addEventListener('input', (event) => {
     return;
   }
 })
+
+
+// search products by category
+// search products by category
+
+
+async function searchProductsByCategories() {
+  
+  
+}
