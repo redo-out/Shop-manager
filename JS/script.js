@@ -5,14 +5,19 @@ const buttons = document.getElementById("buttons");
 const inputs = document.getElementById("inputs");
 
 
-async function getProducts() {
-  const response = await fetch('http://localhost:3000/api/products');
+async function getProducts(URL) {
+  const response = await fetch(URL);
+  if (!response.ok) {
+    const problem = await response.json();
+    console.log(problem.message);
+    return;
+  }
   const json = await response.json();
   return json;
 }
 
 async function displayProducts() {
-  const products = await getProducts();
+  const products = await getProducts('http://localhost:3000/api/products');
   console.log(products);
   productPlaceholder.innerHTML = "";
   products.forEach(product => {
@@ -39,13 +44,12 @@ displayProducts();
 
 async function availableProducts() {
   productPlaceholder.innerHTML = "";
-  const products = await getProducts();
-  let inStock = products.filter(produit => produit.stock >= 1)
-  if (!inStock) {
+  const products = await getProducts('http://localhost:3000/api/products?inStock=true');
+  if (!products) {
     productPlaceholder.textContent = "no product available";
     return;
   }
-  inStock.forEach(product => {
+  products.forEach(product => {
     let list = document.createElement("li");
     list.innerHTML = ` <img 
             src="http://127.0.0.1:3000${product.image}"
@@ -69,19 +73,25 @@ async function availableProducts() {
 buttons.addEventListener('click', (event) => {
   if (event.target.classList.contains("button-disponible")) {
     availableProducts();
+    searchPrice.value = "";
+    searchByTitle.value = "";
     return;
   }
   if (event.target.classList.contains("button-reinitialiser")) {
     displayProducts();
+    searchPrice.value = "";
+    searchByTitle.value = "";
     return
   }
 });
 
 async function searchByNameOrDescription() {
+
+
+  // filteredTasksByTitle = tasks.filter((task) => task.title.toLowerCase().includes(searchValue),);
   productPlaceholder.innerHTML = "";
   const title = document.getElementById("product-search-by-title").value.toLowerCase();
-  let products = await getProducts();
-  let newProducts = products.filter(produit => produit.name == title || produit.description == title);
+  let newProducts = await getProducts(`http://localhost:3000/api/products?search=${title}`);
   if (!newProducts) {
     productPlaceholder.textContent = "couldn't find a product with this name";
     return;
@@ -110,8 +120,7 @@ async function searchByNameOrDescription() {
 async function searchByPrice() {
   productPlaceholder.innerHTML = "";
   const price = document.getElementById("product-search-by-price").value;
-  let products = await getProducts();
-  let newProducts = products.filter(produit => produit.price <= price)
+  let newProducts = await getProducts(`http://localhost:3000/api/products?maxPrice=${price}`);
   if (!newProducts) {
     productPlaceholder.textContent = "no product found";
     return;
