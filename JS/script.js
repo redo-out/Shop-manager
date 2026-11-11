@@ -5,9 +5,6 @@ const   buttonDisponible = document.getElementById("button-disponible");
 const   buttonReinitialiser = document.getElementById("button-reinitialiser");
 
 
-// fetch("http://localhost:3000/api/products")
-// .then(response => response.json())
-// .then(data => console.log(data))
 async function getProducts(){
     const response = await fetch('http://localhost:3000/api/products');
     const json = await response.json();
@@ -20,8 +17,7 @@ async function displayProducts(){
     console.log(products);
     products.forEach(product => {
         let list = document.createElement("li");
-        list.innerHTML = ` <img
-            class="rounded-lg items-center"
+        list.innerHTML = ` <img 
             src="http://127.0.0.1:3000${product.image}"
             alt=""
           />
