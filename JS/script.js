@@ -3,7 +3,7 @@ const searchPrice = document.getElementById("product-search-by-price");
 const productPlaceholder = document.getElementById("product-placeholder");
 const buttons = document.getElementById("buttons");
 const inputs = document.getElementById("inputs");
-const selects = document.querySelector(".select-category");
+const select = document.querySelector(".select-category");
 
 // fetch products
 // fetch products
@@ -38,7 +38,7 @@ async function availableProducts() {
   const products = await getProducts(
     "http://localhost:3000/api/products?inStock=true",
   );
-  if (!products) {
+  if (products == "") {
     productPlaceholder.textContent = "no product available";
     return;
   }
@@ -53,12 +53,14 @@ buttons.addEventListener("click", (event) => {
     availableProducts();
     searchPrice.value = "";
     searchByTitle.value = "";
+    select.selectedIndex = 0;
     return;
   }
   if (event.target.classList.contains("button-reinitialiser")) {
     displayProducts();
     searchPrice.value = "";
     searchByTitle.value = "";
+    select.selectedIndex = 0;
     return;
   }
 });
@@ -74,7 +76,7 @@ async function searchByNameOrDescription() {
   let newProducts = await getProducts(
     `http://localhost:3000/api/products?search=${title}`,
   );
-  if (!newProducts) {
+  if (newProducts == "") {
     productPlaceholder.textContent = "couldn't find a product with this name";
     return;
   }
@@ -90,7 +92,7 @@ async function searchByPrice() {
   let newProducts = await getProducts(
     `http://localhost:3000/api/products?maxPrice=${price}`,
   );
-  if (!newProducts) {
+  if (newProducts == "") {
     productPlaceholder.textContent = "no product found";
     return;
   }
@@ -114,7 +116,6 @@ inputs.addEventListener("input", (event) => {
 // search products by category
 // search products by category
 
-const select = document.querySelector(".select-category");
 async function addCategoryiesToSelect() {
   const products = await getProducts(`http://localhost:3000/api/categories`);
   products.forEach((product) => {
