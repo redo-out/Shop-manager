@@ -9,6 +9,7 @@ const selects = document.querySelector(".select-category");
 // fetch products
 addCategoryiesToSelect();
 
+
 async function getProducts(URL) {
   const response = await fetch(URL);
   if (!response.ok) {
@@ -25,6 +26,8 @@ async function getProducts(URL) {
 
 async function displayProducts() {
   const products = await getProducts("http://localhost:3000/api/products");
+  console.log(products);
+
   productPlaceholder.innerHTML = "";
   insertHtmlAndAppend(products);
 }
@@ -53,12 +56,14 @@ buttons.addEventListener("click", (event) => {
     availableProducts();
     searchPrice.value = "";
     searchByTitle.value = "";
+    select.selectedIndex = 0;
     return;
   }
   if (event.target.classList.contains("button-reinitialiser")) {
     displayProducts();
     searchPrice.value = "";
     searchByTitle.value = "";
+    select.selectedIndex = 0;
     return;
   }
 });
@@ -148,16 +153,52 @@ async function insertHtmlAndAppend(products) {
             alt=""
           />
           <div>
-            <div class="text-xs font-bold text-sky-500">${product.name}</div>
+            <h2 class="text-xs font-bold text-sky-500">${product.name}</h2>
             <div class="font-bold text-gray-700">
               <p>${product.description}</p>
             </div>
-            <div class="text-sm text-gray-600">${product.price} MAD</div>
+            <h3 class="text-sm text-gray-600">${product.price} MAD</h3>
             <div class="grid grid-flow-col pt-1 gap-2">
-            <p class="border-2 rounded-xl border-indigo-900 justify-between bg-indigo-200">in stock: ${product.stock}</p>
-            <p class="border-2 rounded-xl border-red-900 bg-red-200">${product.categoryName}</p>
+            <p class="border-2 rounded-md pl-2 border-indigo-900 justify-between bg-indigo-200">in stock: ${product.stock}</p>
+            <p class="border-2 rounded-md pl-2 border-red-900 bg-red-200">${product.categoryName}</p>
+            </div>
+            <div class="grid grid-flow-col pt-1 gap-2">
+            <button id ="${product.id}" class="cart-button w-full rounded-md bg-indigo-600 text-white 
+            hover:bg-indigo-700">Add to cart</button>
             </div>
           </div> `;
     productPlaceholder.appendChild(list);
   });
 }
+
+// adding carts
+// adding carts
+
+const boughtItems = document.getElementById("carts-placeholder");
+const carts = JSON.parse(localStorage.getItem("carts")) || [];
+
+productPlaceholder.addEventListener("click", event => {
+  async function addCart() {
+    let id = event.target.id;
+    const cart = await getProducts(`http://localhost:3000/api/products/${id}`)
+    carts.push(cart)
+    localStorage.setItem("carts", JSON.stringify(carts));
+  }
+  addCart();
+})
+
+function  displayCarts(){
+  boughtItems.innerHTML = "";
+    carts.forEach(cart =>{
+      const list = document.createElement("li");
+    list.className = "flex";
+    list.innerHTML = `<div class="flex justify-between items-center gap-4">
+    <div><img class="w-40" src="http://127.0.0.1:3000${cart.image}" alt="" /></div>
+    <div><h2 class="text-xs font-bold text-sky-500">${cart.name}</h2>
+    <h3> ${cart.price}</h3></div>
+    </div>`
+    boughtItems.appendChild(list);
+    })
+}
+displayCarts();
+
