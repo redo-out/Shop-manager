@@ -1,4 +1,3 @@
-
 const searchByTitle = document.getElementById("product-search-by-title");
 const searchPrice = document.getElementById("product-search-by-price");
 const productPlaceholder = document.getElementById("product-placeholder");
@@ -8,12 +7,14 @@ const selects = document.querySelector(".select-category");
 const boughtItems = document.getElementById("carts-placeholder");
 const carts = JSON.parse(localStorage.getItem("carts")) || [];
 const select = document.querySelector(".select-category");
+const productstTotal = document.getElementById("checkout-total");
+const productSelected = document.getElementById("product-selected");
+let totalPrice = 0;
 
 // fetch products
 // fetch products
 addCategoryiesToSelect();
 displayCarts();
-
 
 async function getProducts(URL) {
   const response = await fetch(URL);
@@ -31,7 +32,6 @@ async function getProducts(URL) {
 
 async function displayProducts() {
   const products = await getProducts("http://localhost:3000/api/products");
-  // console.log(products);
   productPlaceholder.innerHTML = "";
   insertHtmlAndAppend(products);
 }
@@ -180,44 +180,118 @@ async function insertHtmlAndAppend(products) {
 // adding carts
 // adding carts
 
-
-productPlaceholder.addEventListener("click", event => {
+productPlaceholder.addEventListener("click", (event) => {
   async function addCart() {
     if (event.target.classList.contains("cart-button")) {
       let id = event.target.id;
-      const cart = await getProducts(`http://localhost:3000/api/products/${id}`)
-      cart.quantity = 1;
-      // console.log(cart);
-      
-        carts.push(cart)
-        localStorage.setItem("carts", JSON.stringify(carts));
-        displayCarts();
-      // }
+      const cart = await getProducts(
+        `http://localhost:3000/api/products/${id}`,
+      );
+      const existingItem = carts.find((cart) => cart.id == id);
+      if (existingItem) {
+        if (!existingItem.quantity) {
+          existingItem.quantity = 0;
+        }
+        existingItem.quantity = existingItem.quantity + 1;
+      } else {
+        cart.quantity = 1;
+        carts.push(cart);
+      }
+      localStorage.setItem("carts", JSON.stringify(carts));
+      displayCarts();
     }
   }
   addCart();
-})
+});
+
+// delete carts
+// delete carts
+
+const cartsPlaceholder = document.getElementById("carts-placeholder");
+cartsPlaceholder.addEventListener("click", (event) => {
+  if (event.target.classList.contains("delete-button")) {
+    let id = event.target.id;
+    deleteCart(id);
+    localStorage.setItem("carts", JSON.stringify(carts));
+    displayCarts();
+  } else if (event.target.classList.contains("plus-button")) {
+    let id = event.target.id;
+    carts.forEach((cart) => {
+      if (cart.id == id) {
+        if (cart.quantity < cart.stock) {
+          cart.quantity += 1;        
+          localStorage.setItem("carts", JSON.stringify(carts));
+          displayCarts();
+          displayProducts();
+        }
+      }
+    });
+  } else if (event.target.classList.contains("minus-button")) {
+    let id = event.target.id;
+    carts.forEach((cart) => {
+      if (cart.id == id) {
+        if (cart.quantity > 0) {
+          if (cart.quantity == 1) {
+            deleteCart(id);
+            localStorage.setItem("carts", JSON.stringify(carts));
+          }
+          cart.quantity -= 1;
+          localStorage.setItem("carts", JSON.stringify(carts));
+          displayCarts();
+        }
+      }
+    });
+  }
+});
+
+function deleteCart(id) {
+  const cartIndex = carts.findIndex((cart) => cart.id == id);
+  if (cartIndex !== -1) {
+    carts.splice(cartIndex, 1);
+  }
+}
+
+// display carts
+// display carts
 
 function displayCarts() {
-  // const newCarts = 
   boughtItems.innerHTML = "";
-  carts.forEach(cart => {
-
-    // console.log(cart);
+  carts.forEach((cart) => {
     const list = document.createElement("li");
-    list.className = "flex";
-    list.innerHTML = `<div class="flex justify-between items-center gap-4">
-      <div><img class="w-40" src="http://127.0.0.1:3000${cart.image}" alt="" /></div>
-      <div><h2 class="text-2xl font-bold text-sky-500">${cart.name}</h2>
-      <h3> ${cart.price} MAD</h3>
-      <div class="flex gap-2">
-      <button class="text-2xl">+</button>
-      <p class="text-2xl">${cart.quantity}</p>
-      <button class="text-2xl">-</button>
-      </div>
-      <div><button class="flex h-10 w-40 bg-indigo-600 rounded-md ">delete</button></div>
-      </div>
-      </div>`
-    boughtItems.appendChild(list);
-  })
+   list.className = "flex bg-slate-800 rounded-lg p-3 mb-3 gap-3 items-center";
+    list.innerHTML = `
+    <img class="w-24 h-24 object-contain rounded-md" src="http://127.0.0.1:3000${cart.image}" alt="">
+    <div class="flex flex-col gap-2 flex-1">
+        <h2 class="text-lg font-bold text-sky-400">${cart.name}</h2>
+        <p>${cart.price} MAD</p>
+        <div class="flex gap-3 items-center">
+            <button id="${cart.id}" class="minus-button bg-slate-600 px-3 rounded">-</button>
+            <p>${cart.quantity}</p>
+            <button id="${cart.id}" class="plus-button bg-indigo-600 px-3 rounded">+</button>
+        </div><button id="${cart.id}" class="delete-button bg-red-600 rounded-md p-2 text-white">Delete</button>
+    </div>`
+boughtItems.appendChild(list);
+  });
+  totalPrice = carts.reduce((total, cart)=>{
+    return total + Number(cart.price) * cart.quantity;
+  },0);
+  productSelected.textContent = carts.length;
+  productstTotal.textContent = `${totalPrice.toFixed(2)} MAD`;
 }
+
+// formule section
+// formule section
+
+const dialog = document.querySelector("#dialog")
+const cartButtton = document.querySelector("#cart-button");
+const closeDialog = document.querySelector("#close-dialog");
+
+cartButtton.addEventListener('click', ()=>{
+  dialog.showModal();
+  if (carts.length == 0){
+    swal.fire("No products in the cart")
+  }
+})
+closeDialog.addEventListener('click', ()=>{
+  dialog.close();
+})
