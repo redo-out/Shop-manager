@@ -46,8 +46,9 @@ async function availableProducts() {
     "http://localhost:3000/api/products?inStock=true",
   );
   if (products == "") {
-    // productPlaceholder.textContent = "no product available";
+    productPlaceholder.textContent = "no product available";
     Swal.fire("No product available!");
+
     return;
   }
   insertHtmlAndAppend(products);
@@ -85,8 +86,9 @@ async function searchByNameOrDescription() {
     `http://localhost:3000/api/products?search=${title}`,
   );
   if (newProducts == "") {
-    // productPlaceholder.textContent = "couldn't find a product with this name";
+    productPlaceholder.textContent = "couldn't find a product with this name";
     Swal.fire("Couldn't find a product with this name!");
+
     return;
   }
   insertHtmlAndAppend(newProducts);
@@ -102,7 +104,7 @@ async function searchByPrice() {
     `http://localhost:3000/api/products?maxPrice=${price}`,
   );
   if (newProducts == "") {
-    // productPlaceholder.textContent = "no product found";
+    productPlaceholder.textContent = "no product found";
     Swal.fire("No product found!");
     return;
   }
